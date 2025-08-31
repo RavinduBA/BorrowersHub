@@ -1,7 +1,8 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
+import { useBorrowerContext } from "@/context/BorrowerContext";
 
 export interface Borrower {
   id: string;
@@ -11,30 +12,23 @@ export interface Borrower {
   status: string;
 }
 
-interface BorrowerPipelineProps {
-  borrowers: Record<string, Borrower[]>;
-  activeTab: string;
-  onTabChange: (tab: string) => void;
-  onBorrowerSelect: (borrower: Borrower) => void;
-  selectedBorrowerId: string | null;
-}
-
 const tabs = [
   { label: "New", value: "new" },
   { label: "In Review", value: "in_review" },
   { label: "Approved", value: "approved" },
 ];
 
-const BorrowerPipeline: React.FC<BorrowerPipelineProps> = ({
-  borrowers,
-  activeTab,
-  onTabChange,
-  onBorrowerSelect,
-  selectedBorrowerId,
-}) => {
+const BorrowerPipeline: React.FC = () => {
+  const {
+    borrowers,
+    activeTab,
+    setActiveTab,
+    setSelectedBorrower,
+    selectedBorrower,
+  } = useBorrowerContext();
   return (
-    <div className="bg-white rounded-lg shadow p-4 flex flex-col h-full">
-      <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
+    <Card className="h-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="mb-4">
           {tabs.map((tab) => (
             <TabsTrigger key={tab.value} value={tab.value}>
@@ -50,11 +44,11 @@ const BorrowerPipeline: React.FC<BorrowerPipelineProps> = ({
                   <div
                     key={b.id}
                     className={`flex items-center justify-between p-3 mb-2 rounded cursor-pointer transition-colors ${
-                      selectedBorrowerId === b.id
+                      selectedBorrower?.id === b.id
                         ? "bg-blue-50 border border-blue-200"
                         : "hover:bg-gray-100"
                     }`}
-                    onClick={() => onBorrowerSelect(b)}
+                    onClick={() => setSelectedBorrower(b)}
                   >
                     <div>
                       <div className="font-semibold">{b.name}</div>
@@ -71,7 +65,9 @@ const BorrowerPipeline: React.FC<BorrowerPipelineProps> = ({
                   </div>
                 ))
               ) : (
-                <div className="text-gray-400 text-center py-8">No borrowers</div>
+                <div className="text-gray-400 text-center py-8">
+                  No borrowers
+                </div>
               )}
             </div>
           </TabsContent>
@@ -98,9 +94,8 @@ const BorrowerPipeline: React.FC<BorrowerPipelineProps> = ({
           </label>
         </div>
       </div>
-    </div>
+    </Card>
   );
-
-  };
+};
 
 export default BorrowerPipeline;
