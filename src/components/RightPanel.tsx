@@ -19,13 +19,12 @@ const RightPanel: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Broker Info Card */}
-      <Card className="flex flex-col gap-4 p-6">
-        <div className="text-lg font-bold mb-2">Broker Overview</div>
+    
+      <Card className="h-fit w-full ">
+        <div className="text-2xl font-semibold tracking-tight ml-4">Broker Overview</div>
         {broker ? (
-          <>
-            <div className="text-xl font-semibold">{broker.name}</div>
+          <div className="">
+            <div className="text-xl font-bold ml-4">{broker.name}</div>
             <div className="grid grid-cols-3 gap-4 my-4">
               <div className="flex flex-col items-center">
                 <div className="text-2xl font-bold">{broker.deals}</div>
@@ -44,27 +43,27 @@ const RightPanel: React.FC = () => {
             </div>
             {/* Contact Buttons */}
             <div className="flex justify-center gap-2 mt-2">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className=" cursor-pointer">
                 Call
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className=" cursor-pointer">
                 Email
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className=" cursor-pointer">
                 Chat
               </Button>
             </div>
-          </>
+          </div>
         ) : (
           <div className="text-gray-400 text-center">
             Loading broker info...
           </div>
         )}
-      </Card>
+     
       {/* Onboarding Workflow Card */}
-      <Card className="p-6">
-        <div className="text-lg font-bold mb-4">Onboarding Workflow</div>
-        <ol className="list-decimal ml-6 space-y-2">
+     
+        <div className="text-lg font-semibold ml-4">Onboarding Workflow</div>
+        <ol className="list-decimal ml-4 space-y-1">
           {workflow.length ? (
             workflow.map((step, i) => (
               <li key={i} className="flex items-center gap-2">
@@ -78,11 +77,11 @@ const RightPanel: React.FC = () => {
             <li className="text-gray-400">Loading steps...</li>
           )}
         </ol>
-      </Card>
+    
       {/* AI Assistant Toggle */}
-      <Card className="flex items-center justify-between p-4">
-        <span className="font-medium">E Ardsassist</span>
-        <label className="inline-flex items-center cursor-pointer">
+    
+        <span className="font-medium ml-4">E Ardsassist</span>
+        <label className="inline-flex  items-center cursor-pointer ml-4">
           <input
             type="checkbox"
             checked={aiEnabled}
@@ -95,7 +94,7 @@ const RightPanel: React.FC = () => {
           </span>
         </label>
       </Card>
-    </div>
+
   );
 };
 

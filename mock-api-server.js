@@ -3,8 +3,13 @@ import { readFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
+//  mock API server
+
+
 const PORT = 5174;
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+//Reads the file help/api/sample-response.json and parses it into a JavaScript object called sample.
 const sample = JSON.parse(
     readFileSync(join(__dirname, "help/api/sample-response.json"), "utf-8")
 );
@@ -15,8 +20,9 @@ sample.endpoints.forEach((ep) => {
     endpointMap[ep.url] = ep;
 });
 
-// Borrower details for all IDs in pipeline
+// pipeline contains the borrowers grouped by status
 const pipeline = sample.endpoints[0].response;
+
 const borrowerDetails = {};
 // Add the sample detail for id=1
 borrowerDetails["1"] = sample.endpoints[1].response;
@@ -41,6 +47,7 @@ pipeline.new.concat(pipeline.in_review, pipeline.approved).forEach((b) => {
     }
 });
 
+//Starts an HTTP server that listens for incoming requests.
 const server = createServer((req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Content-Type", "application/json");
@@ -68,6 +75,7 @@ const server = createServer((req, res) => {
             res.statusCode = 404;
             res.end(JSON.stringify({ error: "Borrower not found" }));
         }
+        
         return;
     }
 
@@ -77,8 +85,10 @@ const server = createServer((req, res) => {
         const action = postActionMatch[2];
         // Find the matching endpoint in sample
         const ep = sample.endpoints.find(e => e.url.includes(action) && e.method === "POST");
+        // Server sends response
         if (ep) {
             res.end(JSON.stringify(ep.response));
+        // If the action is not found, return 404.
         } else {
             res.statusCode = 404;
             res.end(JSON.stringify({ error: "Not found" }));
@@ -98,11 +108,13 @@ const server = createServer((req, res) => {
         res.end(JSON.stringify(sample.endpoints[7].response));
         return;
     }
-
+    
+    //If no routes match, return 404.
     res.statusCode = 404;
     res.end(JSON.stringify({ error: "Not found" }));
 });
 
+// Start the server
 server.listen(PORT, () => {
     console.log(`Mock API server running at http://localhost:${PORT}`);
 });

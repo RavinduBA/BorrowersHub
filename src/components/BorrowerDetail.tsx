@@ -8,7 +8,7 @@ import {
   AccordionContent,
 } from "./ui/accordion";
 import { Button } from "./ui/button";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, ArrowBigDown, ArrowDown } from "lucide-react";
 import { useBorrowerContext } from "../context/BorrowerContext";
 
 interface BorrowerDetailData {
@@ -29,28 +29,31 @@ interface BorrowerDetailData {
 
 const statusColors: Record<string, string> = {
   New: "bg-gray-200 text-gray-700",
-  "In Review": "bg-yellow-100 text-yellow-800",
-  Approved: "bg-green-100 text-green-800",
-  Renew: "bg-blue-100 text-blue-800",
+  "In Review": "bg-gray-200 text-gray-700",
+  Approved: "bg-gray-200 text-gray-700",
+  Renew: "bg-gray-200 text-gray-700",
 };
 
 const BorrowerDetail: React.FC = () => {
   const { borrowers, selectedBorrowerId } = useBorrowerContext();
   const [detail, setDetail] = useState<BorrowerDetailData | null>(null);
   const [loading, setLoading] = useState(false);
-  
+
   const selectedBorrower =
     Object.values(borrowers)
       .flat()
       .find((b) => b.id === selectedBorrowerId) || null;
 
   useEffect(() => {
-    console.log("[BorrowerDetail] selectedBorrowerId changed:", selectedBorrowerId);
-    
+    console.log(
+      "[BorrowerDetail] selectedBorrowerId changed:",
+      selectedBorrowerId
+    );
+
     if (selectedBorrowerId) {
       setLoading(true);
       setDetail(null); // Clear previous detail immediately
-      
+
       fetch(`http://localhost:5174/api/borrowers/${selectedBorrowerId}`)
         .then((res) => {
           if (!res.ok) {
@@ -59,11 +62,18 @@ const BorrowerDetail: React.FC = () => {
           return res.json();
         })
         .then((data) => {
-          console.log("[BorrowerDetail] Fetched detail for:", selectedBorrowerId, data);
+          console.log(
+            "[BorrowerDetail] Fetched detail for:",
+            selectedBorrowerId,
+            data
+          );
           setDetail(data);
         })
         .catch((error) => {
-          console.error("[BorrowerDetail] Error fetching borrower details:", error);
+          console.error(
+            "[BorrowerDetail] Error fetching borrower details:",
+            error
+          );
           setDetail(null);
         })
         .finally(() => {
@@ -109,22 +119,26 @@ const BorrowerDetail: React.FC = () => {
   }
 
   return (
-    <Card className="h-full flex flex-col gap-6">
+    <Card className="h-fit flex flex-col gap-6">
+      <h1 className="text-2xl font-semibold tracking-tight ml-4">
+        Borrower Details
+      </h1>
+
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 border-b pb-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 border-b pb-4 ml-4 mr-4">
         <div>
           <div className="text-xl font-bold">{detail.name}</div>
-          <div className="text-sm text-gray-500">
-            {detail.email} &bull; {detail.phone}
-          </div>
+          <div className="text-sm text-gray-500"> {detail.email} </div>
+          <div className="text-sm text-gray-500"> {detail.phone} </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex  flex-col ">
           <div className="text-lg font-semibold">
-            ${detail.loan_amount.toLocaleString()}
+            {" "}
+            ${detail.loan_amount.toLocaleString()}{" "}
           </div>
           <span
             className={
-              "px-3 py-1 rounded-full text-xs font-semibold " +
+              "px-3 py-1 w-fit  rounded text-xs font-semibold " +
               (statusColors[detail.status] || "bg-gray-200 text-gray-700")
             }
           >
@@ -132,36 +146,54 @@ const BorrowerDetail: React.FC = () => {
           </span>
         </div>
       </div>
-      
+
       {/* AI Explainability Section */}
+
       <Accordion type="single" collapsible defaultValue="ai-explain">
-        <AccordionItem value="ai-explain">
-          <AccordionTrigger className="font-semibold text-red-600 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-red-500" /> 
+        <AccordionItem value="ai-explain" >
+          {/* Header with icon and title */}
+          <AccordionTrigger className=" font-semibold ml-4 mr-4 text-sm sm:text-base cursor-pointer w-20">
+                        AI Explainability Issues
           </AccordionTrigger>
-          <AccordionContent>
-            <ul className="space-y-2">
+
+          {/* Accordion content */}
+          <AccordionContent className=" ml-2">
+            <ul className="space-y-2 pl-2">
               {detail.ai_flags && detail.ai_flags.length > 0 ? (
                 detail.ai_flags.map((flag, i) => (
-                  <li key={i} className="flex items-center gap-2 text-red-600">
-                    <AlertTriangle className="w-4 h-4 text-red-500" /> {flag}
+                  <li
+                    key={i}
+                    className="flex items-center gap-2 text-sm"
+                  >
+                    <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                    {flag}
                   </li>
                 ))
               ) : (
-                <li className="text-gray-500">No AI flags detected</li>
+                <li className="text-gray-500 text-sm pl-1">
+                  No AI flags detected
+                </li>
               )}
             </ul>
-            <div className="flex gap-2 mt-4">
-              <Button variant="outline">Request Documents</Button>
-              <Button variant="secondary">Send to Valuer</Button>
-              <Button variant="default">Approve</Button>
+
+            {/* Action buttons */}
+            <div className="flex flex-col sm:flex-row gap-2 mt-4">
+              <Button variant="outline" className="flex-1 sm:flex-none cursor-pointer">
+                Request Documents
+              </Button>
+              <Button variant="secondary" className="flex-1 sm:flex-none cursor-pointer">
+                Send to Valuer
+              </Button>
+              <Button variant="default" className="flex-1 sm:flex-none cursor-pointer">
+                Approve
+              </Button>
             </div>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-      
+
       {/* Loan Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-4 " >
         <div>
           <div className="text-xs text-gray-500">Employment</div>
           <div className="font-medium">{detail.employment}</div>
@@ -181,16 +213,16 @@ const BorrowerDetail: React.FC = () => {
           <div className="font-medium">{detail.source_of_funds}</div>
         </div>
       </div>
-      
+
       {/* Risk Signal */}
-      <div className="flex items-center gap-2 bg-yellow-100 text-yellow-800 rounded px-3 py-2">
+      <div className="flex items-center gap-2 ml-4 mr-4 bg-yellow-50 text-yellow-800 rounded px-3 py-2">
         <AlertTriangle className="w-4 h-4 text-yellow-600" />
         <span className="font-medium">{detail.risk_signal}</span>
       </div>
-      
+
       {/* Escalate Button */}
       <div className="flex justify-end">
-        <Button variant="default" className="bg-red-600 hover:bg-red-700">
+        <Button variant="outline" className="mr-4 cursor-pointer">
           Escalate to Credit Committee
         </Button>
       </div>

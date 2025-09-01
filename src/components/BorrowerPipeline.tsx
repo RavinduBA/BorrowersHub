@@ -29,16 +29,21 @@ const BorrowerPipeline: React.FC = () => {
   console.log("[BorrowerPipeline] activeTab:", activeTab);
   console.log("[BorrowerPipeline] selectedBorrowerId:", selectedBorrowerId);
   return (
-    <Card className="h-full">
-      {/* Tabs Section  ,When you click a tab, setActiveTab updates the context state. */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="mb-4">
+
+    <Card className="h-fit w-full">
+
+        <h1 className="text-2xl font-semibold tracking-tight ml-4">Borrower Pipeline</h1>
+
+      {/* Tabs Section  ,When  click a tab, setActiveTab updates the context state. */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full cursor-pointer">
+        <TabsList className="mb-2 bg-gray-100 ml-4  ">
           {tabs.map((tab) => (
             <TabsTrigger key={tab.value} value={tab.value}>
               {tab.label}
             </TabsTrigger>
           ))}
         </TabsList>
+
         {/* Content Section */}
         {tabs.map((tab) => (
           <TabsContent key={tab.value} value={tab.value} className="flex-1">
@@ -47,10 +52,10 @@ const BorrowerPipeline: React.FC = () => {
                 borrowers[tab.value].map((b) => (
                   <div
                     key={b.id}
-                    className={`flex items-center justify-between p-3 mb-2 rounded cursor-pointer transition-colors ${
+                    className={`flex items-center justify-between p-3 mb-2 ml-4  mr-4 rounded cursor-pointer w-100 transition-colors ${
                       selectedBorrowerId === b.id
                         ? "bg-blue-50 border border-blue-200"
-                        : "hover:bg-gray-100"
+                        : "hover:bg-gray-50"
                     }`}
                     onClick={() => setSelectedBorrowerId(b.id)}
                   >
@@ -77,12 +82,13 @@ const BorrowerPipeline: React.FC = () => {
           </TabsContent>
         ))}
       </Tabs>
+
       {/* Radio Section */}
-      <div className="mt-4">
-        <div className="text-xs font-bold text-gray-500 mb-2 tracking-widest">
+      <div className="">
+        <div className="text-xs font-bold text-gray-500 mb-2 ml-4 tracking-widest">
           F-SANATISED ACTIVE
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-4  ml-4">
           <label className="flex items-center gap-2">
             <input
               type="radio"
