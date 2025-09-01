@@ -1,8 +1,7 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
-import { useBorrowerContext } from "@/context/BorrowerContext";
+import { useBorrowerContext } from "../context/BorrowerContext";
 
 export interface Borrower {
   id: string;
@@ -23,11 +22,15 @@ const BorrowerPipeline: React.FC = () => {
     borrowers,
     activeTab,
     setActiveTab,
-    setSelectedBorrower,
-    selectedBorrower,
+    setSelectedBorrowerId,
+    selectedBorrowerId,
   } = useBorrowerContext();
+  console.log("[BorrowerPipeline] borrowers:", borrowers);
+  console.log("[BorrowerPipeline] activeTab:", activeTab);
+  console.log("[BorrowerPipeline] selectedBorrowerId:", selectedBorrowerId);
   return (
     <Card className="h-full">
+      {/* Tabs Section  ,When you click a tab, setActiveTab updates the context state. */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="mb-4">
           {tabs.map((tab) => (
@@ -36,6 +39,7 @@ const BorrowerPipeline: React.FC = () => {
             </TabsTrigger>
           ))}
         </TabsList>
+        {/* Content Section */}
         {tabs.map((tab) => (
           <TabsContent key={tab.value} value={tab.value} className="flex-1">
             <div className="flex-1 overflow-y-auto">
@@ -44,11 +48,11 @@ const BorrowerPipeline: React.FC = () => {
                   <div
                     key={b.id}
                     className={`flex items-center justify-between p-3 mb-2 rounded cursor-pointer transition-colors ${
-                      selectedBorrower?.id === b.id
+                      selectedBorrowerId === b.id
                         ? "bg-blue-50 border border-blue-200"
                         : "hover:bg-gray-100"
                     }`}
-                    onClick={() => setSelectedBorrower(b)}
+                    onClick={() => setSelectedBorrowerId(b.id)}
                   >
                     <div>
                       <div className="font-semibold">{b.name}</div>

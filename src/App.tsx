@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-
 import Layout from "./components/Layout";
 import BorrowerPipeline from "./components/BorrowerPipeline";
-import CenterPanel from "./components/CenterPanel";
+import BorrowerDetail from "./components/BorrowerDetail";
 import RightPanel from "./components/RightPanel";
 import { BorrowerProvider } from "./context/BorrowerContext";
+
+console.log("app loaded");
 
 const App: React.FC = () => {
   return (
@@ -15,7 +15,7 @@ const App: React.FC = () => {
             <BorrowerPipeline />
           </div>
           <div className="col-span-1">
-            <CenterPanel />
+            <BorrowerDetail />
           </div>
           <div className="col-span-1">
             <RightPanel />

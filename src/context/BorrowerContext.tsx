@@ -3,8 +3,8 @@ import type { Borrower } from "@/components/BorrowerPipeline";
 
 interface BorrowerContextType {
   borrowers: Record<string, Borrower[]>;
-  selectedBorrower: Borrower | null;
-  setSelectedBorrower: (b: Borrower | null) => void;
+  selectedBorrowerId: string | null;
+  setSelectedBorrowerId: (id: string | null) => void;
   activeTab: string;
   setActiveTab: (tab: string) => void;
   fetchBorrowers: () => void;
@@ -22,7 +22,7 @@ export const BorrowerProvider: React.FC<{ children: React.ReactNode }> = ({
     in_review: [],
     approved: [],
   });
-  const [selectedBorrower, setSelectedBorrower] = useState<Borrower | null>(
+  const [selectedBorrowerId, setSelectedBorrowerId] = useState<string | null>(
     null
   );
   const [activeTab, setActiveTab] = useState<string>("new");
@@ -36,9 +36,10 @@ export const BorrowerProvider: React.FC<{ children: React.ReactNode }> = ({
           in_review: data.in_review || [],
           approved: data.approved || [],
         });
+        // Only set selectedBorrowerId if none is already selected
         const first =
           data.new?.[0] || data.in_review?.[0] || data.approved?.[0] || null;
-        setSelectedBorrower(first || null);
+        setSelectedBorrowerId((prev) => prev || (first ? first.id : null));
       });
   };
 
@@ -50,8 +51,8 @@ export const BorrowerProvider: React.FC<{ children: React.ReactNode }> = ({
     <BorrowerContext.Provider
       value={{
         borrowers,
-        selectedBorrower,
-        setSelectedBorrower,
+        selectedBorrowerId,
+        setSelectedBorrowerId,
         activeTab,
         setActiveTab,
         fetchBorrowers,
@@ -62,6 +63,9 @@ export const BorrowerProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
+{
+  /* A custom hook for consuming the context. */
+}
 export const useBorrowerContext = () => {
   const ctx = useContext(BorrowerContext);
   if (!ctx)
